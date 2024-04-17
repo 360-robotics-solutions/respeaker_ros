@@ -4,21 +4,27 @@
   <version>0.0.0</version>
   <description>The respeaker_ros package</description>
   <maintainer email="furushchev@jsk.imi.i.u-tokyo.ac.jp">Yuki Furuta</maintainer>
-  <license>Apache</license>
+  <license>Apache-2.0</license> <!-- Ensure license identifier matches SPDX identifiers -->
   <author email="furushchev@jsk.imi.i.u-tokyo.ac.jp">Yuki Furuta</author>
 
-  <buildtool_depend>catkin</buildtool_depend>
-  <depend condition="$ROS_PYTHON_VERSION == 3">catkin_virtualenv</depend>
-  <depend>angles</depend>
-  <depend>audio_common_msgs</depend>
-  <depend>dynamic_reconfigure</depend>
+  <!-- Update build tool from catkin to ament_cmake or ament_python based on your package type -->
+  <buildtool_depend>ament_cmake</buildtool_depend> <!-- Use ament_cmake for C++ packages or ament_python for Python packages -->
+
+  <!-- Adjust dependencies for ROS 2 -->
+  <depend>angles</depend> <!-- Check if this dependency has been ported to ROS 2 -->
+  <depend>audio_common_msgs</depend> <!-- Confirm the availability in ROS 2 -->
+  <depend>rclpy</depend> <!-- ROS 2 client library for Python -->
   <depend>geometry_msgs</depend>
-  <depend>portaudio19-dev</depend>
-  <depend>python-pyaudio</depend>
-  <depend>speech_recognition_msgs</depend>
+  <exec_depend>portaudio19-dev</exec_depend> <!-- Use exec_depend if it is only needed at runtime -->
+  <exec_depend>python3-pyaudio</exec_depend> <!-- Note the Python version change -->
+  <depend>speech_recognition_msgs</depend> <!-- Confirm the availability in ROS 2 -->
   <depend>std_msgs</depend>
-  <depend>tf</depend>
+  <depend>tf2_ros</depend> <!-- Update tf to tf2_ros for ROS 2 -->
+  
+  <!-- ROS 2 does not use dynamic_reconfigure; consider parameter callback with rclpy for dynamic parameters -->
+  
+  <!-- If pip dependencies are required, consider using rosdep or setup.cfg for Python packages -->
   <export>
-    <pip_requirements>requirements.txt</pip_requirements>
+    <!-- ROS 2 does not support pip_requirements export in package.xml; handle Python dependencies differently -->
   </export>
 </package>
