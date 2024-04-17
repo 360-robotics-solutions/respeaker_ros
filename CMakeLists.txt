@@ -1,40 +1,45 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.5)
 project(respeaker_ros)
 
-find_package(catkin REQUIRED COMPONENTS
-  catkin_virtualenv
-  dynamic_reconfigure)
-if ($ENV{ROS_PYTHON_VERSION} EQUAL 2)
-  find_package(catkin_virtualenv REQUIRED)
-else()
-  message(WARNING "catkin_virtualenv does not currently support python3"
-    "you need to install python dependencies manually by running:\n"
-    "roscd respeaker_ros && pip install -r requirements.txt")
+# Default to C++14
+if(NOT CMAKE_CXX_STANDARD)
+  set(CMAKE_CXX_STANDARD 14)
 endif()
 
-generate_dynamic_reconfigure_options(
-  cfg/Respeaker.cfg)
+# Find dependencies
+find_package(ament_cmake REQUIRED)
+find_package(ament_cmake_python REQUIRED)
+find_package(rclpy REQUIRED)
+find_package(std_msgs REQUIRED)
+find_package(audio_common_msgs REQUIRED)  # Check if this package exists in ROS 2
+find_package(geometry_msgs REQUIRED)
 
-catkin_package()
+# Note: Dynamic reconfigure is not available in ROS 2
+# Instead, ROS 2 uses parameters for dynamic configuration
+# which can be updated at runtime using parameter services.
 
-if (catkin_virtualenv_FOUND)
-  catkin_generate_virtualenv()
-endif()
+# Install Python nodes
+ament_python_install_package(${PROJECT_NAME})
 
-catkin_install_python(
-  PROGRAMS
+install(PROGRAMS
   scripts/respeaker_node.py
   scripts/speech_to_text.py
-  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+  DESTINATION lib/${PROJECT_NAME})
 
-install(DIRECTORY scripts launch
-  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
-  USE_SOURCE_PERMISSIONS)
+install(DIRECTORY launch
+  DESTINATION share/${PROJECT_NAME})
 
-install(FILES requirements.txt
-  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
+install(FILES
+  requirements.txt
+  DESTINATION share/${PROJECT_NAME})
 
-if (CATKIN_ENABLE_TESTING)
-  catkin_add_nosetests(test/test_installed.py
-    DEPENDENCIES ${PROJECT_NAME}_generate_virtualenv)
+# If testing is enabled, set up tests for ROS 2
+if(BUILD_TESTING)
+  find_package(ament_lint_auto REQUIRED)
+  ament_lint_auto_find_test_dependencies()
+
+  # Here you would add any specific tests
 endif()
+
+# Macro for ament package
+ament_package()
